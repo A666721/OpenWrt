@@ -106,6 +106,15 @@ jobs:
         wget https://raw.githubusercontent.com/openwrt-ipq60xx/patches/main/feeds/luci/0001-show-soc-status-on-luci.patch || true
         git am 0001-show-soc-status-on-luci.patch || true
   
+    - name: Fix 256MB q6_region Memory
+      run: |
+        cd $OPENWRT_PATH
+        echo "=== 修改前 q6_region ==="
+        grep -n "4ab00000" target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
+        sed -i 's/reg = <0x0 0x4ab00000 0x0 0x3700000>/reg = <0x0 0x4ab00000 0x0 0x02800000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
+        echo "=== 修改后 q6_region ==="
+        grep -n "4ab00000" target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
+  
     - name: Load Custom Configuration
       run: |
         [ -e files ] && mv files $OPENWRT_PATH/files
